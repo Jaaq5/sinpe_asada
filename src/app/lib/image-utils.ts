@@ -4,11 +4,14 @@ import React from "react";
 
 export const handleImageChange = (
   event: React.ChangeEvent<HTMLInputElement>,
-  setSelectedImage: React.Dispatch<React.SetStateAction<File | null>>
+  setSelectedImage: React.Dispatch<React.SetStateAction<File | null>>,
+  setImageUrl: React.Dispatch<React.SetStateAction<string | null>>
 ) => {
   const file = event.target.files?.[0];
   if (file) {
     setSelectedImage(file);
+    const url = URL.createObjectURL(file);
+    setImageUrl(url);
   }
 };
 
@@ -30,14 +33,10 @@ export const handleExtractTransaction = (
           if (transactionNumbers && transactionNumbers.length > 0) {
             setExtractedText(transactionNumbers.join(", "));
           } else {
-            setExtractedText(
-              "No se encontraron números entre 'Documento' y 'Cuenta'."
-            );
+            setExtractedText("No se encontraron números en 'Documento'");
           }
         } else {
-          setExtractedText(
-            "No se encontraron 'Documento' o 'Cuenta' en el texto o 'Documento' aparece después de 'Cuenta'."
-          );
+          setExtractedText("No se encontró 'Documento' en el texto");
         }
       })
       .catch((err) => {

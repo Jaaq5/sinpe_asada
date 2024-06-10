@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import Tesseract from "tesseract.js";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import Image from "next/image";
 
 import {
   handleImageChange,
@@ -18,6 +19,7 @@ import {
   handleFileChange,
   handleUpdateFile,
   handleTestUpdateFile,
+  handleDownloadFile,
 } from "../lib/file-utils";
 import {
   handleDragOver,
@@ -32,6 +34,7 @@ const TextExtractor: React.FC<TextExtractorProps> = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [extractedText, setExtractedText] = useState<string>("");
   const [dragOver, setDragOver] = useState<boolean>(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   return (
     <div>
@@ -42,13 +45,17 @@ const TextExtractor: React.FC<TextExtractorProps> = () => {
         id="image-upload"
         type="file"
         accept="image/*"
-        onChange={(event) => handleImageChange(event, setSelectedImage)}
+        onChange={(event) =>
+          handleImageChange(event, setSelectedImage, setImageUrl)
+        }
         style={{ display: "none" }}
       />
       <div
         onDragOver={(event) => handleDragOver(event, setDragOver)}
         onDragLeave={(event) => handleDragLeave(event, setDragOver)}
-        onDrop={(event) => handleDrop(event, setDragOver, setSelectedImage)}
+        onDrop={(event) =>
+          handleDrop(event, setDragOver, setSelectedImage, setImageUrl)
+        }
         style={{
           border: "2px dashed gray",
           padding: "20px",
@@ -59,6 +66,22 @@ const TextExtractor: React.FC<TextExtractorProps> = () => {
         Arrastra y suelta una imagen aquí, o selecciona una imagen usando el
         botón de arriba.
       </div>
+      {/*
+      {imageUrl && (
+        <div>
+          <h2>Imagen cargada:</h2>
+          <div style={{ maxWidth: "30%", maxHeight: "30%" }}>
+            <Image
+              src={imageUrl}
+              alt="Imagen cargada"
+              layout="responsive"
+              width={600}
+              height={400}
+            />
+          </div>
+        </div>
+      )}
+      */}
       {selectedImage && (
         <div>
           <button
@@ -99,15 +122,37 @@ const TextExtractor: React.FC<TextExtractorProps> = () => {
         <div>
           <button
             className="btn btn-success"
-            onClick={() => handleUpdateFile(selectedFile, extractedText)}
+            onClick={() =>
+              handleUpdateFile(selectedFile, extractedText, setSelectedFile)
+            }
           >
             Actualizar excel
+          </button>
+          <button
+            className="btn btn-success"
+            onClick={() => handleDownloadFile(selectedFile)}
+          >
+            Descargar excel
           </button>
           {/*
           <button onClick={() => handleTestUpdateFile(selectedFile)}>
             Test Update File
           </button>
           */}
+        </div>
+      )}
+      {imageUrl && (
+        <div style={{ flex: 1 }}>
+          <h2>Imagen cargada:</h2>
+          <div style={{ maxWidth: "40%", maxHeight: "40%" }}>
+            <Image
+              src={imageUrl}
+              alt="Imagen cargada"
+              layout="responsive"
+              width={600}
+              height={400}
+            />
+          </div>
         </div>
       )}
     </div>

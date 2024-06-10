@@ -20,12 +20,16 @@ export const handleDragLeave = (
 export const handleDrop = (
   event: React.DragEvent<HTMLDivElement>,
   setDragOver: React.Dispatch<React.SetStateAction<boolean>>,
-  setSelectedImage: React.Dispatch<React.SetStateAction<File | null>>
+  setSelectedImage: React.Dispatch<React.SetStateAction<File | null>>,
+  setImageUrl: React.Dispatch<React.SetStateAction<string | null>>
 ) => {
   event.preventDefault();
   setDragOver(false);
-  const file = event.dataTransfer.files[0];
+
+  const file = event.dataTransfer.files[0]; // Obtener el archivo de la lista de archivos
   if (file) {
     setSelectedImage(file);
+    const url = URL.createObjectURL(file);
+    setImageUrl(url);
   }
 };

@@ -15,7 +15,8 @@ export const handleFileChange = (
 
 export const handleUpdateFile = (
   selectedFile: File | null,
-  extractedText: string
+  extractedText: string,
+  setSelectedFile: React.Dispatch<React.SetStateAction<File | null>>
 ) => {
   if (selectedFile && extractedText) {
     const reader = new FileReader();
@@ -59,15 +60,25 @@ export const handleUpdateFile = (
           type: "array",
         });
 
-        saveAs(
-          new Blob([wbout], { type: "application/octet-stream" }),
-          "updated_file.xlsx"
+        // Ahora actualizamos el estado del archivo seleccionado
+        setSelectedFile(
+          new File([wbout], selectedFile.name, {
+            type: "application/octet-stream",
+          })
         );
       }
     };
     reader.readAsArrayBuffer(selectedFile);
   } else {
     console.error("No hay archivo seleccionado o texto extraído.");
+  }
+};
+
+export const handleDownloadFile = (updatedFile: File | null) => {
+  if (updatedFile) {
+    saveAs(updatedFile, "Control_SINPE_Junio_2024.xlsx");
+  } else {
+    console.error("No hay archivo actualizado para descargar.");
   }
 };
 
@@ -116,7 +127,7 @@ export const handleTestUpdateFile = (selectedFile: File | null) => {
 
         saveAs(
           new Blob([wbout], { type: "application/octet-stream" }),
-          "updated_file.xlsx"
+          "Test_File.xlsx"
         );
       }
     };
