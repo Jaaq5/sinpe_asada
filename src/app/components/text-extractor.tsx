@@ -11,6 +11,7 @@ import {
   handleImageChange,
   handleExtractAllText,
   handleExtractText,
+  handleExtractTransaction,
 } from "../lib/image-utils";
 
 import {
@@ -34,10 +35,15 @@ const TextExtractor: React.FC<TextExtractorProps> = () => {
 
   return (
     <div>
+      <label htmlFor="image-upload" className="btn btn-primary">
+        <i className="fas fa-cloud-upload-alt"></i>Cargar imagen
+      </label>
       <input
+        id="image-upload"
         type="file"
         accept="image/*"
         onChange={(event) => handleImageChange(event, setSelectedImage)}
+        style={{ display: "none" }}
       />
       <div
         onDragOver={(event) => handleDragOver(event, setDragOver)}
@@ -56,38 +62,52 @@ const TextExtractor: React.FC<TextExtractorProps> = () => {
       {selectedImage && (
         <div>
           <button
-            onClick={() => handleExtractText(selectedImage, setExtractedText)}
+            className="btn btn-outline btn-primary"
+            onClick={() =>
+              handleExtractTransaction(selectedImage, setExtractedText)
+            }
           >
-            Extract Text
+            Obtener transaccion
           </button>
           <button
+            className="btn btn-outline btn-primary"
             onClick={() =>
               handleExtractAllText(selectedImage, setExtractedText)
             }
           >
-            Extract all Text
+            Obtener todo el texto
           </button>
         </div>
       )}
       {extractedText && (
         <div>
-          <h2>Extracted Numbers:</h2>
+          <h2>Texto obtenido:</h2>
           <p>{extractedText}</p>
         </div>
       )}
+      <label htmlFor="file-upload" className="btn btn-outline btn-accent">
+        <i className="fas fa-cloud-upload-alt"></i>Cargar excel
+      </label>
       <input
+        id="file-upload"
         type="file"
         accept=".xlsx"
         onChange={(event) => handleFileChange(event, setSelectedFile)}
+        style={{ display: "none" }}
       />
       {selectedFile && (
         <div>
-          <button onClick={() => handleUpdateFile(selectedFile, extractedText)}>
-            Update File
+          <button
+            className="btn btn-success"
+            onClick={() => handleUpdateFile(selectedFile, extractedText)}
+          >
+            Actualizar excel
           </button>
+          {/*
           <button onClick={() => handleTestUpdateFile(selectedFile)}>
             Test Update File
           </button>
+          */}
         </div>
       )}
     </div>

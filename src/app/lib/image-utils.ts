@@ -12,6 +12,41 @@ export const handleImageChange = (
   }
 };
 
+export const handleExtractTransaction = (
+  selectedImage: File | null,
+  setExtractedText: React.Dispatch<React.SetStateAction<string>>
+) => {
+  if (selectedImage) {
+    Tesseract.recognize(selectedImage, "spa", {
+      logger: (m) => console.log(m),
+    })
+      .then(({ data: { text } }) => {
+        const docIndex = text.indexOf("Documento");
+        const accountIndex = text.indexOf("Cuenta");
+        if (docIndex !== -1 && accountIndex !== -1 && docIndex < accountIndex) {
+          const transactionNumbers = text
+            .substring(docIndex, accountIndex)
+            .match(/\d+/g);
+          if (transactionNumbers && transactionNumbers.length > 0) {
+            setExtractedText(transactionNumbers.join(", "));
+          } else {
+            setExtractedText(
+              "No se encontraron números entre 'Documento' y 'Cuenta'."
+            );
+          }
+        } else {
+          setExtractedText(
+            "No se encontraron 'Documento' o 'Cuenta' en el texto o 'Documento' aparece después de 'Cuenta'."
+          );
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setExtractedText("Error al extraer el texto");
+      });
+  }
+};
+
 export const handleExtractAllText = (
   selectedImage: File | null,
   setExtractedText: React.Dispatch<React.SetStateAction<string>>
