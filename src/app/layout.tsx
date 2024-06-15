@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import "@mantine/core/styles.css";
+import "@mantine/dropzone/styles.css";
+import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import Header from "./components/header";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Sinpe - Asada",
-  description: "Web para obtener información de imágenes",
+  description: "Web para el control de pagos por SINPE",
 };
 
 export default function RootLayout({
@@ -17,11 +20,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <head>
+        <ColorSchemeScript />
+      </head>
+      <body>
         <header>
           <Header />
         </header>
-        {children}
+        <MantineProvider>{children}</MantineProvider>
       </body>
     </html>
   );

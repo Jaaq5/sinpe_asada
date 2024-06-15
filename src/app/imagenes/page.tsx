@@ -3,11 +3,25 @@
 
 import React from "react";
 import TextExtractor from "../components/text-extractor";
+import { BaseDemo } from "../components/dropzone";
+import LabeledTextInputs from "../components/image-extracted-info";
 
 const Page: React.FC = () => {
   return (
-    <div className="relative min-h-screen bg-white text-black">
-      <TextExtractor />
+    <div>
+      {/*<TextExtractor />*/}
+      <div>
+        <BaseDemo />
+      </div>
+      {/*
+      <div className="p-8">
+        <LabeledTextInputs
+          labels={["Paja", "Fecha", "Monto", "Banco", "Transacción"]}
+          placeholders={["1234", "01/01/24", "8.000,00", "BCR", "12345678"]}
+          initialValues={["1234", "01/01/24", "8.000,00", "BCR", "12345678"]}
+        />
+      </div>
+      */}
     </div>
   );
 };
