@@ -5,6 +5,7 @@ import "@mantine/core/styles.css";
 import "@mantine/dropzone/styles.css";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import Header from "./components/header";
+import { Footer } from "./components/mantine-footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,10 +25,16 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body>
-        <header>
-          <Header />
-        </header>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider defaultColorScheme="dark">
+          <header>
+            <Header />
+          </header>
+          {children}
+          {/* Footer */}
+          <footer>
+            <Footer />
+          </footer>
+        </MantineProvider>
       </body>
     </html>
   );
