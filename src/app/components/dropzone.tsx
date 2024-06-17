@@ -19,7 +19,8 @@ import {
   FileWithPath,
   DropzoneProps,
 } from "@mantine/dropzone";
-import Tesseract from "tesseract.js";
+import Tesseract, { createWorker } from "tesseract.js";
+import { updateTextInputs } from "../lib/update-text-inputs"; // Importamos la nueva función
 
 interface ExtendedDropzoneProps extends Partial<DropzoneProps> {
   onFilesChange?: (files: FileWithPath[]) => void;
@@ -32,11 +33,11 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
   const [fullHeight, setFullHeight] = useState<boolean>(false); // Estado para controlar la altura de la imagen
   const [extractedText, setExtractedText] = useState<string>("");
   const [textInputValues, setTextInputValues] = useState<string[]>([
-    "1234",
-    "01/01/24",
-    "8.000,00",
-    "BCR",
-    "12345678",
+    "",
+    "",
+    "",
+    "",
+    "",
   ]);
   // To avoid same image load fails
   const [previousFileName, setPreviousFileName] = useState<string | null>(null);
@@ -56,12 +57,15 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
     });
   };
 
-  const updateTextInputs = useCallback(() => {
-    if (extractedText) {
-      const lowerCaseText = extractedText.toLowerCase();
-      setBank(lowerCaseText);
-    }
-  }, [extractedText]);
+  const processFile = async (file: FileWithPath) => {
+    const worker = await createWorker("spa");
+    const {
+      data: { text },
+    } = await worker.recognize(file);
+    console.log("Texto extraído:", text);
+    setExtractedText(text);
+    await worker.terminate();
+  };
 
   useEffect(() => {
     if (files.length > 0) {
@@ -82,125 +86,24 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
       }
       //setLoadingPreviews(true); // Se establece a true antes de iniciar el proceso de reconocimiento
       //setPreviousFileName(file.name);
-      Tesseract.recognize(file, "spa", {
-        //logger: (m) => console.log(m),
-      })
-        .then(({ data: { text } }) => {
-          console.log("Texto extraído:", text);
-          setExtractedText(text);
-          //setLoadingPreviews(false); // Se establece a false cuando el proceso de reconocimiento ha terminado
-        })
-        .catch((err) => console.error(err));
+      processFile(file).catch((err) => console.error(err));
       //setLoadingPreviews(false); // Se establece a false cuando el proceso de reconocimiento ha terminado
     }
   }, [files]);
 
-  const setBank = (text: string) => {
-    const lowerCaseText = text.toLowerCase();
-    //Banco Popular transaction code
-    const findTransactionCode = (text: string): string | null => {
-      const regex =
-        /(?:número|transacción|de|comprobante:)\s*([a-zA-Z\d]{8,15})/i;
-      //console.log("Regex =", regex);
-      const match = text.match(regex);
-      //console.log("Match =", match);
-      return match ? match[1] : null;
-    };
-    const transactionCode = findTransactionCode(text);
-
-    // Banco de Costa Rica
-    if (lowerCaseText.includes("bcr") || lowerCaseText.includes("documento")) {
-      console.log("Banco encontrado: BCR");
-      setTextInputValues((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[3] = "BCR";
-        return newValues;
-      });
-      // Bac credomatic
-    } else if (
-      lowerCaseText.includes("bac") ||
-      lowerCaseText.includes("hola")
-    ) {
-      console.log("Banco encontrado: BAC");
-      setTextInputValues((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[3] = "BAC";
-        return newValues;
-      });
-      // Banco Nacional
-    } else if (
-      //lowerCaseText.includes("banco nacional") ||
-      lowerCaseText.includes("transacción procesada") ||
-      lowerCaseText.includes("fecha del pago") ||
-      lowerCaseText.includes("concepto")
-    ) {
-      console.log("Banco encontrado: BNCR");
-      setTextInputValues((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[3] = "BNCR";
-        return newValues;
-      });
-      // Banco Popular
-    } else if (lowerCaseText.includes("banco popular")) {
-      console.log("Banco encontrado: BP");
-      setTextInputValues((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[3] = "BP";
-        return newValues;
-      });
-    } else if (transactionCode) {
-      console.log(
-        `Banco encontrado: BP, Código de transacción: ${transactionCode}`
-      );
-      setTextInputValues((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[3] = "BP";
-        newValues[4] = transactionCode.toUpperCase();
-        return newValues;
-      });
-    } else {
-      console.log("NO ENCONTRADO");
-      setTextInputValues((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[3] = "No encontrado";
-        return newValues;
-      });
-    }
-  };
-
-  {
-    /*
-  const setDate = (text: string) => {
-    const lowerCaseText = text.toLowerCase();
-    if (lowerCaseText.includes("bcr") || lowerCaseText.includes("documento")) {
-      console.log("Banco encontrado: BCR");
-      setTextInputValues((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[3] = "BCR";
-        return newValues;
-      });
-    } else {
-      console.log("PENDIENTE");
-      setTextInputValues((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[3] = "Pendiente";
-        return newValues;
-      });
-    }
-  };
-  */
-  }
-
   useEffect(() => {
-    updateTextInputs();
-    setLoadingPreviews(false);
-  }, [extractedText, updateTextInputs]);
+    if (extractedText) {
+      updateTextInputs(extractedText, setTextInputValues);
+      setLoadingPreviews(false);
+    }
+  }, [extractedText]);
 
   const previews = files.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);
     return (
       <div key={index}>
         <Image
+          alt="Imagen de comprobante de pago"
           src={imageUrl}
           onLoad={() => {
             //setLoadingPreviews(false);
