@@ -64,6 +64,7 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
     } = await worker.recognize(file);
     console.log("Texto extraído:", text);
     setExtractedText(text);
+    setLoadingPreviews(false);
     await worker.terminate();
   };
 
@@ -82,7 +83,7 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
         //setLoadingPreviews(false);
         return;
       }
-    */
+        */
       }
       //setLoadingPreviews(true); // Se establece a true antes de iniciar el proceso de reconocimiento
       //setPreviousFileName(file.name);
