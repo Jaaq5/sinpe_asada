@@ -1,7 +1,7 @@
 // components/BaseDemo.tsx
 "use client";
 
-import LabeledTextInputs from "../components/image-extracted-info";
+import LabeledTextInputs from "./image-extracted-info";
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Group,

@@ -1,7 +1,7 @@
 // app/ui/Header.tsx
 import React from "react";
 import NavBar from "./nav-bar";
-import { HeaderTabs } from "../components/mantine-nav-bar";
+import { HeaderTabs } from "./mantine-nav-bar";
 
 const Header: React.FC = () => {
   return (

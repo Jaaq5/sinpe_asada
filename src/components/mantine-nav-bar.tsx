@@ -37,7 +37,7 @@ const user = {
 
 const tabs = [
   { label: "Inicio", link: "/" },
-  { label: "Control SINPE", link: "/imagenes" },
+  { label: "Control SINPE", link: "/sinpe" },
   { label: "Pendiente1", link: "/" },
   { label: "Pendiente2", link: "/" },
   { label: "Pendiente3", link: "/" },

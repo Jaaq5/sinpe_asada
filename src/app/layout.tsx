@@ -4,8 +4,8 @@ import "./globals.css";
 import "@mantine/core/styles.css";
 import "@mantine/dropzone/styles.css";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
-import Header from "./components/header";
-import { Footer } from "./components/mantine-footer";
+import Header from "../components/header";
+import { Footer } from "../components/mantine-footer";
 
 const inter = Inter({ subsets: ["latin"] });
 

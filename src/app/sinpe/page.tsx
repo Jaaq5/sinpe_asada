@@ -1,10 +1,11 @@
 // app/pages/page.tsx
 //"use client";
 
-import React from "react";
-import TextExtractor from "../components/text-extractor";
-import { BaseDemo } from "../components/dropzone";
-import LabeledTextInputs from "../components/image-extracted-info";
+import React, { Suspense } from "react";
+import TextExtractor from "../../components/text-extractor";
+import { BaseDemo } from "../../components/dropzone";
+import LabeledTextInputs from "../../components/image-extracted-info";
+import Loading from "../loading";
 
 const Page: React.FC = () => {
   return (
