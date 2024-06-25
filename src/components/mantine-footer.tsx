@@ -8,7 +8,7 @@ import {
   IconDroplet,
 } from "@tabler/icons-react";
 import { MantineLogo } from "@mantinex/mantine-logo";
-import classes from "../css/footer.module.css";
+import classes from "../styles/footer.module.css";
 
 const links = [
   { link: "#", label: "Contacto" },

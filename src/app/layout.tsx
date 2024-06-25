@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import "@mantine/core/styles.css";
 import "@mantine/dropzone/styles.css";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import Header from "../components/header";
 import { Footer } from "../components/mantine-footer";
-
-const inter = Inter({ subsets: ["latin"] });
+import { roboto, eduQldBeginner, monserrat } from "../lib/fonts";
 
 export const metadata: Metadata = {
   title: "Sinpe - Asada",
@@ -24,13 +22,12 @@ export default function RootLayout({
       <head>
         <ColorSchemeScript />
       </head>
-      <body>
+      <body className={monserrat.className}>
         <MantineProvider defaultColorScheme="dark">
           <header>
             <Header />
           </header>
           {children}
-          {/* Footer */}
           <footer>
             <Footer />
           </footer>

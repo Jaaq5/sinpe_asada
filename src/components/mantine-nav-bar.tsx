@@ -27,7 +27,8 @@ import {
   IconChevronDown,
 } from "@tabler/icons-react";
 import { MantineLogo } from "@mantinex/mantine-logo";
-import classes from "../css/headers-tabs.module.css";
+import classes from "../styles/headers-tabs.module.css";
+import Image from "next/image"; // Import next/image
 
 const user = {
   name: "Jane Spoonfighter",
@@ -37,13 +38,8 @@ const user = {
 
 const tabs = [
   { label: "Inicio", link: "/" },
-  { label: "Control SINPE", link: "/sinpe" },
-  { label: "Pendiente1", link: "/" },
-  { label: "Pendiente2", link: "/" },
-  { label: "Pendiente3", link: "/" },
-  { label: "Pendiente4", link: "/" },
-  { label: "Pendiente5", link: "/" },
-  { label: "Pendiente6", link: "/" },
+  { label: "Sinpe", link: "/sinpe" },
+  { label: "Próximamente", link: "/" },
 ];
 
 export function HeaderTabs() {
@@ -73,6 +69,7 @@ export function HeaderTabs() {
           {/*
           <MantineLogo size={28} />
           */}
+
           <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
 
           <Menu
@@ -203,7 +200,17 @@ export function HeaderTabs() {
           </Menu>
         </Group>
       </Container>
-      <Container size="md">
+      <Container size="md" className=" flex place-items-baseline">
+        <div className={classes.logoContainer}>
+          {/* Crear un contenedor para el logo */}
+          <Image
+            src="/asada-logo-dark-2.webp"
+            alt="Logo"
+            className={classes.logo}
+            width={150} // Ajusta según tus necesidades
+            height={70} // Ajusta según tus necesidades
+          />
+        </div>
         <Tabs
           defaultValue="Home"
           variant="outline"
