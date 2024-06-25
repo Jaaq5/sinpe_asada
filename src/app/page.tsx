@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import Header from "../components/header";
+import "../lib/disable-deploy-console-logs";
 
 export default function Home() {
   return (

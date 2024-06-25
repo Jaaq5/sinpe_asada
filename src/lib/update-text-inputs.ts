@@ -17,9 +17,10 @@ const findTransactionCode = (text: string, bank: string): string | null => {
     const match = text.match(regex);
     console.log("Transaction code match", match);
     return match ? match[0] : null;
+    // BAC #####################################################################
   } else if (bank === "BAC") {
     console.log("Text is", text);
-    const regex = /\breferencia\s+(\d{23,26})\b/;
+    const regex = /\breferencia\s+(\d{8,26})\b/;
     const match = text.match(regex);
     console.log("Transaction code match", match);
     if (match) {
@@ -28,6 +29,7 @@ const findTransactionCode = (text: string, bank: string): string | null => {
       return lastEightDigits;
     }
     return null;
+    // BCR #####################################################################
   } else if (bank === "BCR") {
     const regex = /\bdocumento\s+(\d{6,9})\b/;
     //console.log("El texto es", text);
@@ -165,29 +167,13 @@ export const setDate = (
 ) => {
   const lowerCaseText = text.toLowerCase();
 
-  const regex01 =
-    /\b\d{1,2}\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre),?\s+\d{4}\b/;
-  const match = text.match(regex01);
-  console.log("Date match:", match);
-
-  if (match) {
-    const fechaCompleta: string = match[0]; // Obtenemos la cadena completa que coincide con la expresión regular
-
-    // Utilizamos otra expresión regular para extraer el día, mes y año
-    const regexExtract: RegExp =
-      /(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre),?\s+(\d{4})/;
-    const matchExtract = fechaCompleta.match(regexExtract);
-
-    if (matchExtract) {
-      const dia: string = matchExtract[1];
-      const mes: string = matchExtract[2];
-      let ano: string = matchExtract[3];
-
-      // Obtener los últimos dos dígitos del año
-      ano = ano.slice(-2);
-
-      // Convertimos el nombre del mes a su número correspondiente
-      const meses: { [key: string]: string } = {
+  const datePatterns: {
+    [key: string]: { regex: RegExp; months?: { [key: string]: string } };
+  } = {
+    bcr: {
+      regex:
+        /\b\d{1,2}\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre),?\s+\d{4}\b/,
+      months: {
         enero: "01",
         febrero: "02",
         marzo: "03",
@@ -200,35 +186,96 @@ export const setDate = (
         octubre: "10",
         noviembre: "11",
         diciembre: "12",
-      };
+      },
+    },
+    bac: {
+      regex:
+        /\b\d{1,2}\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre),?\s+\d{4}\b/,
+      months: {
+        enero: "01",
+        febrero: "02",
+        marzo: "03",
+        abril: "04",
+        mayo: "05",
+        junio: "06",
+        julio: "07",
+        agosto: "08",
+        septiembre: "09",
+        octubre: "10",
+        noviembre: "11",
+        diciembre: "12",
+      },
+    },
+    bncr: {
+      regex: /\b\d{2}\/\d{2}\/\d{4}\b/,
+    },
+    otro: {
+      regex: /tu_nuevo_regex_aqui/,
+      months: {
+        // Define aquí los meses y sus números correspondientes
+      },
+    },
+  };
 
-      const mesLower = mes.toLowerCase();
-      const mesNumero = meses[mesLower];
+  let matchedPattern: string | undefined;
+  let matchedDate: string | undefined;
+
+  // Iteramos sobre las claves de datePatterns para encontrar coincidencias
+  Object.keys(datePatterns).some((bank: string) => {
+    const { regex } = datePatterns[bank];
+    const match = text.match(regex);
+    if (match) {
+      matchedPattern = bank;
+      matchedDate = match[0];
+      return true; // Salimos del bucle al encontrar la primera coincidencia
+    }
+    return false;
+  });
+
+  // Si encontramos una coincidencia
+  if (matchedPattern && matchedDate) {
+    const { regex, months } = datePatterns[matchedPattern];
+
+    // Manejar el patrón específico de bncr
+    if (matchedPattern === "bncr") {
+      const fechaFormateada = matchedDate.slice(0, 6) + matchedDate.slice(-2);
+      setTextInputValues((prevValues) => [
+        ...prevValues.slice(0, 1),
+        fechaFormateada,
+        ...prevValues.slice(2),
+      ]);
+      console.log("Fecha formateada:", fechaFormateada);
+      return;
+    }
+
+    // Para otros patrones como bcr y bac
+    const regexExtract = /(\d{1,2})\s+(de)?\s*(\w+),?\s+(\d{4})/;
+    const matchExtract = matchedDate.match(regexExtract);
+
+    if (matchExtract) {
+      const [, dia, , mes, ano] = matchExtract;
+      const mesNumero = months ? months[mes.toLowerCase()] : undefined;
 
       if (mesNumero) {
-        // Formateamos la fecha en el formato día/mes/año
-        const fechaFormateada: string = `${dia}/${mesNumero}/${ano}`;
-        setTextInputValues((prevValues) => {
-          const newValues = [...prevValues];
-          newValues[1] = fechaFormateada;
-          return newValues;
-        });
-
+        const fechaFormateada = `${dia}/${mesNumero}/${ano.slice(-2)}`;
+        setTextInputValues((prevValues) => [
+          ...prevValues.slice(0, 1),
+          fechaFormateada,
+          ...prevValues.slice(2),
+        ]);
         console.log("Fecha formateada:", fechaFormateada);
-      } else {
-        console.log("Mes no válido.");
+        return;
       }
-    } else {
-      console.log("No se pudieron extraer el día, mes y año.");
     }
-  } else {
-    console.log("La fecha no coincide con el patrón especificado.");
-    setTextInputValues((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[1] = "Pendiente";
-      return newValues;
-    });
   }
+
+  // Si no se encontró ninguna fecha válida, establecemos "Pendiente"
+  setTextInputValues((prevValues) => [
+    ...prevValues.slice(0, 1),
+    "Pendiente",
+    ...prevValues.slice(2),
+  ]);
+  console.log("La fecha no coincide con el patrón especificado.");
 };
 
 export const setAmount = (
