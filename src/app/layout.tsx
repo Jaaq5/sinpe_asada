@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "@mantine/core/styles.css";
 import "@mantine/dropzone/styles.css";
+import "@mantine/notifications/styles.css";
+import { Notifications } from "@mantine/notifications";
+
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import Header from "../components/header";
 import { Footer } from "../components/mantine-footer";
@@ -24,6 +27,7 @@ export default function RootLayout({
       </head>
       <body className={monserrat.className}>
         <MantineProvider defaultColorScheme="dark">
+          <Notifications />
           <header>
             <Header />
           </header>

@@ -11,14 +11,17 @@ import {
   SimpleGrid,
   Container,
   Grid,
+  Button,
 } from "@mantine/core";
-import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
+import { IconUpload, IconPhoto, IconX, IconCheck } from "@tabler/icons-react";
 import {
   Dropzone,
   IMAGE_MIME_TYPE,
   FileWithPath,
   DropzoneProps,
 } from "@mantine/dropzone";
+import { notifications } from "@mantine/notifications";
+
 import Tesseract, { createWorker } from "tesseract.js";
 import { updateTextInputs } from "../lib/update-text-inputs"; // Importamos la nueva función
 
@@ -41,6 +44,7 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
   ]);
   // To avoid same image load fails
   const [previousFileName, setPreviousFileName] = useState<string | null>(null);
+  const [showInputNotification, setShowInputNotification] = useState(false);
 
   const handleFilesChange = (newFiles: FileWithPath[]) => {
     setFiles(newFiles);
@@ -94,10 +98,82 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
 
   useEffect(() => {
     if (extractedText) {
+      console.log("Entra al useEffect 1");
       updateTextInputs(extractedText, setTextInputValues);
       setLoadingPreviews(false);
+      setShowInputNotification(true);
+      //showNotificationBasedOnInputs();
     }
   }, [extractedText]);
+
+  // TODO Works for now, consider using useRef instead
+  useEffect(() => {
+    const showNotificationBasedOnInputs = () => {
+      const values = textInputValues;
+      console.log("textInputValues: ", textInputValues);
+      const hasPending = values.includes("Pendiente");
+      //const hasPending = true;
+
+      if (!hasPending) {
+        showSuccessNotification();
+      } else {
+        showErrorNotification();
+      }
+    };
+    if (showInputNotification === true) {
+      console.log("Entra al useEffect de notificacion");
+      showNotificationBasedOnInputs();
+      setShowInputNotification(false);
+    }
+  }, [showInputNotification]);
+
+  //TODO Needs fix, infinite loop
+  /*
+  useEffect(() => {
+    const showNotificationBasedOnInputs = () => {
+      //const values = textInputValues;
+      //const hasPending = values.includes("Pendiente");
+      const hasPending = true;
+
+      if (!hasPending) {
+        showSuccessNotification();
+      } else {
+        showErrorNotification();
+      }
+    };
+    if (extractedText) {
+      console.log("Entra al useEffect 2");
+      showNotificationBasedOnInputs();
+    }
+  }, [extractedText]);
+  */
+
+  const nofiticationXIcon = (
+    <IconX style={{ width: rem(20), height: rem(20) }} />
+  );
+  const notificationCheckIcon = (
+    <IconCheck style={{ width: rem(20), height: rem(20) }} />
+  );
+
+  const showSuccessNotification = () => {
+    notifications.show({
+      icon: notificationCheckIcon,
+      title: "Éxito",
+      message: "Datos extraídos correctamente.",
+      color: "green",
+      autoClose: 5000,
+    });
+  };
+
+  const showErrorNotification = () => {
+    notifications.show({
+      icon: nofiticationXIcon,
+      title: "Error",
+      message: "Existen datos pendientes.",
+      color: "red",
+      autoClose: 5000,
+    });
+  };
 
   const previews = files.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);
@@ -136,7 +212,7 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
               //handleRejectedFiles(rejectedFiles);
             }}
             onReject={(files) => console.log("rejected files", files)}
-            maxSize={5 * 1024 ** 2}
+            maxSize={2 * 1024 ** 2}
             maxFiles={1}
             // TODO This needs to be fixed
             //accept={IMAGE_MIME_TYPE}
@@ -183,7 +259,7 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
                   Arrastra el comprobante de pago aquí o haz clic
                 </Text>
                 <Text size="sm" c="dimmed" inline mt={7}>
-                  La imagen no debe exceder los 5MB
+                  La imagen no debe exceder los 2MB
                 </Text>
               </div>
             </Group>

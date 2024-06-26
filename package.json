@@ -12,6 +12,7 @@
     "@mantine/core": "^7.10.1",
     "@mantine/dropzone": "^7.10.1",
     "@mantine/hooks": "^7.10.1",
+    "@mantine/notifications": "^7.10.2",
     "@mantinex/mantine-logo": "^1.0.1",
     "@tabler/icons-react": "^3.5.0",
     "clsx": "^2.1.1",

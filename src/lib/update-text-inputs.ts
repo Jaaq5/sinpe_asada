@@ -206,7 +206,7 @@ export const setDate = (
         diciembre: "12",
       },
     },
-    bncr: {
+    bncrOrBp: {
       regex: /\b\d{2}\/\d{2}\/\d{4}\b/,
     },
     otro: {
@@ -237,7 +237,7 @@ export const setDate = (
     const { regex, months } = datePatterns[matchedPattern];
 
     // Manejar el patrón específico de bncr
-    if (matchedPattern === "bncr") {
+    if (matchedPattern === "bncrOrBp") {
       const fechaFormateada = matchedDate.slice(0, 6) + matchedDate.slice(-2);
       setTextInputValues((prevValues) => [
         ...prevValues.slice(0, 1),
@@ -284,16 +284,30 @@ export const setAmount = (
 ) => {
   const lowerCaseText = text.toLowerCase();
 
-  // Expresión regular para buscar un número con decimales después de la palabra "transferido"
-  //const regexAmount = /transferido\s+([\d.]+\,\d+)\b/i;
-  const regexAmount = /transferido\s+(.*?)\s+motivo/;
+  // Expresiones regulares para buscar un número después de "transferido" o "debitado"
+  const regexAmountTransferido = /\btransferido\s+(.*?)\s+motivo/;
+  const regexAmountDebitado = /\bdebitado\s+(.*?)\s+comisión/;
 
-  const match = lowerCaseText.match(regexAmount);
+  let match: RegExpMatchArray | null;
+  let amountText: string | undefined;
+
+  // Buscar coincidencia con "transferido"
+  match = lowerCaseText.match(regexAmountDebitado);
+  if (match) {
+    amountText = match[1]; // Captura el texto que coincide con la expresión regular
+  }
+
+  // Si no se encuentra con "transferido", buscar con "debitado"
+  if (!amountText) {
+    match = lowerCaseText.match(regexAmountTransferido);
+    if (match) {
+      amountText = match[1]; // Captura el texto que coincide con la expresión regular
+    }
+  }
+
   console.log("Amount match:", match);
 
-  if (match) {
-    let amountText = match[1]; // Captura el texto que coincide con la expresión regular
-
+  if (amountText) {
     // Quitamos el primer dígito
     if (amountText.length > 1) {
       amountText = amountText.substring(1); // Eliminamos el primer dígito
@@ -302,16 +316,88 @@ export const setAmount = (
     }
 
     // Actualizamos el estado con el valor del monto
-    setTextInputValues((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[2] = amountText;
-      return newValues;
-    });
+    const formattedAmount = amountText;
+    setTextInputValues((prevValues) => [
+      ...prevValues.slice(0, 2), // Mantener los dos primeros valores sin cambios
+      formattedAmount, // Modificar el tercer valor con "Pendiente"
+      ...prevValues.slice(3), // Mantener los valores restantes sin cambios
+    ]);
 
     console.log("Monto encontrado:", amountText);
   } else {
-    console.log("Texto después de 'transferido' no es un número válido.");
+    console.log(
+      "Texto después de 'transferido' o 'debitado' no es un número válido."
+    );
+
+    // Si no se encontró ningún monto válido, establecemos "Pendiente"
+    setTextInputValues((prevValues) => [
+      ...prevValues.slice(0, 2), // Mantener los dos primeros valores sin cambios
+      "Pendiente", // Modificar el tercer valor con "Pendiente"
+      ...prevValues.slice(3), // Mantener los valores restantes sin cambios
+    ]);
   }
+};
+
+export const setServiceNumber = (
+  text: string,
+  setTextInputValues: (value: React.SetStateAction<string[]>) => void
+) => {
+  const lowerCaseText = text.toLowerCase();
+
+  const serviceNumberPatterns: {
+    [key: string]: { regex: RegExp };
+  } = {
+    motivo: {
+      regex: /\bmotivo\s+(.+?)\b(\d{3,4})\b/,
+    },
+    paja: {
+      regex: /\bpaja\s+(\d+)\b/,
+    },
+  };
+
+  let matchedPattern: string | undefined;
+  let matchedServiceNumber: string | undefined;
+
+  // Iteramos sobre las claves de serviceNumberPatterns para encontrar coincidencias
+  Object.keys(serviceNumberPatterns).some((patternKey: string) => {
+    const { regex } = serviceNumberPatterns[patternKey];
+    const match = text.match(regex);
+    if (match) {
+      matchedPattern = patternKey;
+      console.log("Match 0:", match[0]);
+      console.log("Match 1:", match[1]);
+      console.log("Match 2:", match[2]);
+      if (matchedPattern === "paja") {
+        matchedServiceNumber = match[1];
+        return true;
+      } else {
+        matchedServiceNumber = match[2]; // El segundo grupo capturado por el regex
+        return true; // Salimos del bucle al encontrar la primera coincidencia
+      }
+    }
+    return false;
+  });
+
+  // Si encontramos una coincidencia
+  if (matchedPattern && matchedServiceNumber) {
+    // Aquí puedes realizar cualquier procesamiento adicional necesario
+    const serviceNumberFormatted = matchedServiceNumber;
+
+    // Ejemplo de cómo podrías actualizar el estado de tus input values
+    setTextInputValues((prevValues) => [
+      serviceNumberFormatted, // Modificar el primer valor con fechaFormateada
+      ...prevValues.slice(1), // Mantener los valores restantes sin cambios
+    ]);
+
+    console.log("Número de servicio formateado:", serviceNumberFormatted);
+    return;
+  }
+  // Si no se encontró ninguna fecha válida, establecemos "Pendiente"
+  setTextInputValues((prevValues) => [
+    "Pendiente", // Modificar el primer valor con fechaFormateada
+    ...prevValues.slice(1), // Mantener los valores restantes sin cambios
+  ]);
+  console.log("La paja no coincide con el patrón especificado.");
 };
 
 /**
@@ -329,10 +415,10 @@ export const updateTextInputs = (
 ) => {
   if (extractedText) {
     const lowerCaseText = extractedText.toLowerCase();
+    setServiceNumber(lowerCaseText, setTextInputValues);
+    setDate(lowerCaseText, setTextInputValues);
+    setAmount(lowerCaseText, setTextInputValues);
     setBank(lowerCaseText, setTextInputValues);
     //setTransactionCode(lowerCaseText, setTextInputValues);
-    setAmount(lowerCaseText, setTextInputValues);
-    setDate(lowerCaseText, setTextInputValues);
-    //setServiceNumber(lowerCaseText, setTextInputValues)
   }
 };
