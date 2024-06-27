@@ -11,8 +11,36 @@ import { Footer } from "../components/mantine-footer";
 import { roboto, eduQldBeginner, monserrat } from "../lib/fonts";
 
 export const metadata: Metadata = {
-  title: "Sinpe - Asada",
-  description: "Web para el control de pagos por SINPE",
+  title: "Asada - Dulce Nombre de Naranjo",
+  description: "Pagina web de la asada de Dulce Nombre de Naranjo",
+  creator: "@jaaq5",
+  metadataBase: new URL("https://sinpe-asada.vercel.app"),
+  alternates: {
+    canonical: "/",
+  },
+  keywords: ["Asada", "Dulce Nombre", "Sinpe"],
+
+  /*Facebook*/
+  openGraph: {
+    title: "Asada - Dulce Nombre de Naranjo",
+    description: "Pagina web de la asada de Dulce Nombre de Naranjo",
+    siteName: "Asada - Dulce Nombre de Naranjo",
+    url: "https://sinpe-asada.vercel.app",
+    countryName: "Costa Rica",
+    locale: "es_CR",
+    type: "website",
+    images: "/open-graph-image.webp",
+  },
+
+  /*Twitter*/
+  twitter: {
+    title: "Asada - Dulce Nombre de Naranjo",
+    description: "Pagina web de la asada de Dulce Nombre de Naranjo",
+    creator: "@jaaq5",
+    site: "@sinpe-asada.vercel.app",
+    card: "summary_large_image",
+    images: "/open-graph-image.webp",
+  },
 };
 
 export default function RootLayout({
