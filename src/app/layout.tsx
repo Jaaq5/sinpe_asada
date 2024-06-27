@@ -1,18 +1,23 @@
+// *IMPORTS ####################################################################
 import type { Metadata } from "next";
-import "./globals.css";
+
+import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+
 import "@mantine/core/styles.css";
 import "@mantine/dropzone/styles.css";
 import "@mantine/notifications/styles.css";
-import { Notifications } from "@mantine/notifications";
+import "./globals.css";
 
-import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import Header from "../components/header";
 import { Footer } from "../components/mantine-footer";
-import { roboto, eduQldBeginner, monserrat } from "../lib/fonts";
+import { roboto, monserrat } from "../lib/fonts";
 
+// *METADATA ###################################################################
 export const metadata: Metadata = {
+  /* Html */
   title: "Asada - Dulce Nombre de Naranjo",
-  description: "Pagina web de la asada de Dulce Nombre de Naranjo",
+  description: "Página web de la Asada de Dulce Nombre de Naranjo.",
   creator: "@jaaq5",
   metadataBase: new URL("https://sinpe-asada.vercel.app"),
   alternates: {
@@ -20,28 +25,29 @@ export const metadata: Metadata = {
   },
   keywords: ["Asada", "Dulce Nombre", "Sinpe"],
 
-  /*Facebook*/
+  /* Facebook */
   openGraph: {
     title: "Asada - Dulce Nombre de Naranjo",
-    description: "Pagina web de la asada de Dulce Nombre de Naranjo",
+    description: "Página web de la Asada de Dulce Nombre de Naranjo.",
     siteName: "Asada - Dulce Nombre de Naranjo",
     url: "https://sinpe-asada.vercel.app",
     countryName: "Costa Rica",
     locale: "es_CR",
     type: "website",
-    images: "/open-graph-image.webp",
+    images: "./opengraph-image.png",
   },
 
-  /*Twitter*/
+  /* Twitter */
   twitter: {
     title: "Asada - Dulce Nombre de Naranjo",
-    description: "Pagina web de la asada de Dulce Nombre de Naranjo",
+    description: "Página web de la Asada de Dulce Nombre de Naranjo.",
     creator: "@jaaq5",
     site: "@sinpe-asada.vercel.app",
     card: "summary_large_image",
-    images: "/open-graph-image.webp",
+    images: "./twitter-image.png",
   },
 };
+//##############################################################################
 
 export default function RootLayout({
   children,
