@@ -29,6 +29,7 @@ import {
 import { MantineLogo } from "@mantinex/mantine-logo";
 import classes from "../styles/headers-tabs.module.css";
 import Image from "next/image"; // Import next/image
+import Link from "next/link";
 
 const user = {
   name: "Admin",
@@ -49,7 +50,7 @@ export function HeaderTabs() {
 
   const items = tabs.map((tab) => (
     <Tabs.Tab value={tab.label} key={tab.label}>
-      {tab.label}
+      <Link href={tab.link}>{tab.label}</Link>
     </Tabs.Tab>
   ));
 
@@ -84,7 +85,7 @@ export function HeaderTabs() {
             list: classes.tabsList,
             tab: classes.tab,
           }}
-          onChange={handleTabChange}
+          //onChange={handleTabChange}
         >
           <Tabs.List>{items}</Tabs.List>
         </Tabs>

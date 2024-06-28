@@ -2,7 +2,7 @@
 import React from "react";
 
 const Loading: React.FC = () => {
-  return <div className="loading-spinner">Loading...</div>;
+  return <div className="loading-spinner">Cargando...</div>;
 };
 
 export default Loading;
