@@ -13,7 +13,13 @@ import {
   Grid,
   Button,
 } from "@mantine/core";
-import { IconUpload, IconPhoto, IconX, IconCheck } from "@tabler/icons-react";
+import {
+  IconUpload,
+  IconPhoto,
+  IconX,
+  IconCheck,
+  IconExclamationMark,
+} from "@tabler/icons-react";
 import {
   Dropzone,
   IMAGE_MIME_TYPE,
@@ -117,7 +123,7 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
       if (!hasPending) {
         showSuccessNotification();
       } else {
-        showErrorNotification();
+        showWarningNotification();
       }
     };
     if (showInputNotification === true) {
@@ -155,6 +161,20 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
     <IconCheck style={{ width: rem(20), height: rem(20) }} />
   );
 
+  const nofiticationExclamationMarkIcon = (
+    <IconExclamationMark style={{ width: rem(20), height: rem(20) }} />
+  );
+
+  const showWarningNotification = () => {
+    notifications.show({
+      icon: nofiticationExclamationMarkIcon,
+      title: "Advertencia",
+      message: "Existen datos pendientes.",
+      color: "yellow",
+      autoClose: 5000,
+    });
+  };
+
   const showSuccessNotification = () => {
     notifications.show({
       icon: notificationCheckIcon,
@@ -169,7 +189,7 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
     notifications.show({
       icon: nofiticationXIcon,
       title: "Error",
-      message: "Existen datos pendientes.",
+      message: "Ups!! Algo ha fallado.",
       color: "red",
       autoClose: 5000,
     });
