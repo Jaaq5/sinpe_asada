@@ -1,164 +1,65 @@
-// src/app/components/dropzone.tsx
+// src/components/dropzone.tsx
 
-/**
- * Finds a transaction code in the text.
- *
- * This function uses a regular expression to search for a transaction code in the given text.
- *
- * @param {string} text - The text to search for a transaction code.
- * @returns {string | null} The found transaction code or null if not found.
- */
-const findTransactionCode = (text: string, bank: string): string | null => {
-  //console.log("Text is:", text);
-
-  if (bank === "BP") {
-    const regex = /\bft[a-zA-Z\d]{8,18}\b/;
-    //console.log("El texto es", text);
-    const match = text.match(regex);
-    console.log("Transaction code match", match);
-    return match ? match[0] : null;
-    // BAC #####################################################################
-  } else if (bank === "BAC") {
-    console.log("Text is", text);
-    const regex = /\breferencia\s+(\d{8,26})\b/;
-    const match = text.match(regex);
-    console.log("Transaction code match", match);
-    if (match) {
-      const fullMatch = match[0]; // Captura completa de 23-26 dígitos
-      const lastEightDigits = fullMatch.slice(-8); // Extrae los últimos 8 dígitos
-      return lastEightDigits;
-    }
-    return null;
-    // BCR #####################################################################
-  } else if (bank === "BCR") {
-    const regex = /\bdocumento\s+(\d{6,9})\b/;
-    //console.log("El texto es", text);
-    const match = text.match(regex);
-    console.log("Transaction code match", match);
-    if (match) {
-      const fullMatch = match[0];
-      const lastEightDigits = fullMatch.slice(-8);
-      return lastEightDigits;
-    }
-    return null;
-  } else {
-    console.log("No transaction code found");
-    return null;
-  }
-};
-
-{
-  /*
-export const setTransactionCode = (
-  text: string,
-  setTextInputValues: (value: React.SetStateAction<string[]>) => void
-) => {
-  const transactionCode = findTransactionCode(text);
-  if (transactionCode) {
-    setTextInputValues((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[4] = transactionCode;
-      return newValues;
-    });
-  }
-};
-*/
-}
-
-/**
- * Sets the bank information based on the extracted text.
- *
- * This function analyzes the given text to determine which bank it is
- * associated with and updates the text input values accordingly.
- * It also attempts to find a transaction code if present.
- *
- * @param {string} text - The extracted text from the document.
- * @param {(value: React.SetStateAction<string[]>) => void} setTextInputValues - Function to update the text input values.
- */
-export const setBank = (
+export const setServiceNumber = (
   text: string,
   setTextInputValues: (value: React.SetStateAction<string[]>) => void
 ) => {
   const lowerCaseText = text.toLowerCase();
 
-  // TODO This is for Banco Popular only
-  //const transactionCode03 = findTransactionCode(text, "BCR");
-  const transactionCode01 = findTransactionCode(text, "BP");
-  //const transactionCode02 = findTransactionCode(text, "BAC");
+  const serviceNumberPatterns: {
+    [key: string]: { regex: RegExp };
+  } = {
+    motivo: {
+      regex: /\bmotivo\s+(.+?)\b(\d{3,4})\b/,
+    },
+    paja: {
+      regex: /\bpaja\s+(\d+)\b/,
+    },
+  };
 
-  if (lowerCaseText.includes("bcr") || lowerCaseText.includes("documento")) {
-    console.log("Banco encontrado: BCR");
-    const transactionCode03 = findTransactionCode(text, "BCR");
-    if (transactionCode03) {
-      setTextInputValues((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[3] = "BCR";
-        newValues[4] = transactionCode03.toUpperCase();
-        return newValues;
-      });
-    } else {
-      setTextInputValues((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[3] = "BCR";
-        newValues[4] = "Pendiente";
-        return newValues;
-      });
+  let matchedPattern: string | undefined;
+  let matchedServiceNumber: string | undefined;
+
+  // Iteramos sobre las claves de serviceNumberPatterns para encontrar coincidencias
+  Object.keys(serviceNumberPatterns).some((patternKey: string) => {
+    const { regex } = serviceNumberPatterns[patternKey];
+    const match = text.match(regex);
+    if (match) {
+      matchedPattern = patternKey;
+      console.log("Match 0:", match[0]);
+      console.log("Match 1:", match[1]);
+      console.log("Match 2:", match[2]);
+      if (matchedPattern === "paja") {
+        matchedServiceNumber = match[1];
+        return true;
+      } else {
+        matchedServiceNumber = match[2]; // El segundo grupo capturado por el regex
+        return true; // Salimos del bucle al encontrar la primera coincidencia
+      }
     }
-  } else if (lowerCaseText.includes("bac") || lowerCaseText.includes("hola")) {
-    console.log("Banco encontrado: BAC");
-    const transactionCode02 = findTransactionCode(text, "BAC");
-    if (transactionCode02) {
-      setTextInputValues((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[3] = "BAC";
-        newValues[4] = transactionCode02.toUpperCase();
-        return newValues;
-      });
-    } else {
-      setTextInputValues((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[3] = "BAC";
-        newValues[4] = "Pendiente";
-        return newValues;
-      });
-    }
-  } else if (
-    lowerCaseText.includes("transacción procesada") ||
-    lowerCaseText.includes("fecha del pago") ||
-    lowerCaseText.includes("concepto")
-  ) {
-    console.log("Banco encontrado: BNCR");
-    setTextInputValues((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[3] = "BNCR";
-      return newValues;
-    });
-  } else if (lowerCaseText.includes("banco popular")) {
-    console.log("Banco encontrado: BP");
-    setTextInputValues((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[3] = "BP";
-      return newValues;
-    });
-  } else if (transactionCode01) {
-    console.log(
-      `Banco encontrado: BP, Código de transacción: ${transactionCode01}`
-    );
-    setTextInputValues((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[3] = "BP";
-      newValues[4] = transactionCode01.toUpperCase();
-      return newValues;
-    });
-    // TODO Others banks remaining
-  } else {
-    console.log("NO ENCONTRADO");
-    setTextInputValues((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[3] = "No encontrado";
-      return newValues;
-    });
+    return false;
+  });
+
+  // Si encontramos una coincidencia
+  if (matchedPattern && matchedServiceNumber) {
+    // Aquí puedes realizar cualquier procesamiento adicional necesario
+    const serviceNumberFormatted = matchedServiceNumber;
+
+    // Ejemplo de cómo podrías actualizar el estado de tus input values
+    setTextInputValues((prevValues) => [
+      serviceNumberFormatted, // Modificar el primer valor con fechaFormateada
+      ...prevValues.slice(1), // Mantener los valores restantes sin cambios
+    ]);
+
+    console.log("Número de servicio formateado:", serviceNumberFormatted);
+    return;
   }
+  // Si no se encontró ninguna fecha válida, establecemos "Pendiente"
+  setTextInputValues((prevValues) => [
+    "Pendiente", // Modificar el primer valor con fechaFormateada
+    ...prevValues.slice(1), // Mantener los valores restantes sin cambios
+  ]);
+  console.log("La paja no coincide con el patrón especificado.");
 };
 
 export const setDate = (
@@ -338,66 +239,139 @@ export const setAmount = (
   }
 };
 
-export const setServiceNumber = (
-  text: string,
-  setTextInputValues: (value: React.SetStateAction<string[]>) => void
+/**
+ * Sets the bank name based on extracted text using predefined regex patterns.
+ *
+ * @param {string} extractedText - The text from which to extract and identify the bank.
+ * @param {function} setTextInputValues - Function to update the state with new input values.
+ * @returns {void}
+ *
+ * @example
+ *
+ *  setBank('Text with bcr keyword', setTextInputValues);
+ */
+export const setBank = (
+  extractedText: string,
+  setTextInputValues: (inputValue: React.SetStateAction<string[]>) => void
 ) => {
-  const lowerCaseText = text.toLowerCase();
+  /**
+   * Array of objects containing regex patterns and corresponding bank names.
+   *
+   * @const {Array<{ regex: RegExp, bankName: string }>}
+   */
+  const bankRegexs = [
+    { regex: /\b(bcr|documento)\b/gi, bankName: "BCR" },
+    {
+      regex: /\b(transacción procesada|fecha del pago|concepto)\b/gi,
+      bankName: "BNCR",
+    },
+    { regex: /\b(bac|hola)\b/gi, bankName: "BAC" },
+    {
+      regex: /\b(pase|ha enviado|has pasado|ha pasado)\b/gi,
+      bankName: "SMS",
+    },
+    { regex: /\b(banco popular)\b/gi, bankName: "BP" },
+    { regex: /\bft[a-zA-Z\d]{8,15}\b/, bankName: "BP" },
+  ];
 
-  const serviceNumberPatterns: {
+  let matchedBankRegex: { regex: RegExp; bankName: string } | undefined;
+
+  // Iterate through regex patterns to find a match
+  for (const match of bankRegexs) {
+    const bankRegex = match.regex;
+    if (extractedText.match(bankRegex)) {
+      matchedBankRegex = match;
+      break;
+    }
+  }
+
+  // Update state based on matched bank regex
+  if (matchedBankRegex) {
+    setTextInputValues((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[3] = matchedBankRegex.bankName;
+      return newValues;
+    });
+    console.log(`Bank match: ${matchedBankRegex.bankName}`);
+
+    // Pending when not match found
+  } else {
+    setTextInputValues((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[3] = "Pendiente";
+      return newValues;
+    });
+    console.log(`Bank match: ${matchedBankRegex}`);
+  }
+};
+
+/**
+ * Sets the transaction code based on extracted text using predefined regex patterns.
+ *
+ * @param {string} extractedText - The text from which to extract and identify the transaction code.
+ * @param {function} setTextInputValues - Function to update the state with new input values.
+ * @returns {void}
+ *
+ * @example
+ *
+ *  setTransactionCode('Text with FT12345678 keyword', setTextInputValues);
+ */
+export const setTransactionCode = (
+  extractedText: string,
+  setTextInputValues: (inputValue: React.SetStateAction<string[]>) => void
+) => {
+  const transactionCodePatterns: {
     [key: string]: { regex: RegExp };
   } = {
-    motivo: {
-      regex: /\bmotivo\s+(.+?)\b(\d{3,4})\b/,
+    BP: {
+      regex: /\bft[a-zA-Z\d]{8,18}\b/,
     },
-    paja: {
-      regex: /\bpaja\s+(\d+)\b/,
+    BAC: {
+      regex: /\breferencia\s+(\d{8,26})\b/,
+    },
+    BCR: {
+      regex: /\bdocumento\s+(\d{6,9})\b/,
     },
   };
 
   let matchedPattern: string | undefined;
-  let matchedServiceNumber: string | undefined;
+  let matchedTransactionCode: string | undefined;
 
-  // Iteramos sobre las claves de serviceNumberPatterns para encontrar coincidencias
-  Object.keys(serviceNumberPatterns).some((patternKey: string) => {
-    const { regex } = serviceNumberPatterns[patternKey];
-    const match = text.match(regex);
+  // Iterate over the keys of transactionCodePatterns to find matches
+  Object.keys(transactionCodePatterns).some((patternKey: string) => {
+    const { regex } = transactionCodePatterns[patternKey];
+    const match = extractedText.match(regex);
     if (match) {
       matchedPattern = patternKey;
-      console.log("Match 0:", match[0]);
-      console.log("Match 1:", match[1]);
-      console.log("Match 2:", match[2]);
-      if (matchedPattern === "paja") {
-        matchedServiceNumber = match[1];
-        return true;
-      } else {
-        matchedServiceNumber = match[2]; // El segundo grupo capturado por el regex
-        return true; // Salimos del bucle al encontrar la primera coincidencia
-      }
+      matchedTransactionCode = match[1]; // Assuming the transaction code is captured in the first group
+      return true; // Exit the loop upon finding the first match
     }
     return false;
   });
 
-  // Si encontramos una coincidencia
-  if (matchedPattern && matchedServiceNumber) {
-    // Aquí puedes realizar cualquier procesamiento adicional necesario
-    const serviceNumberFormatted = matchedServiceNumber;
+  // If a match is found
+  if (matchedPattern && matchedTransactionCode) {
+    // Example of additional processing if needed
+    const transactionCodeFormatted = matchedTransactionCode.slice(-8); // Take the last 8 characters
 
-    // Ejemplo de cómo podrías actualizar el estado de tus input values
-    setTextInputValues((prevValues) => [
-      serviceNumberFormatted, // Modificar el primer valor con fechaFormateada
-      ...prevValues.slice(1), // Mantener los valores restantes sin cambios
-    ]);
+    // Update state with new transaction code
+    setTextInputValues((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[4] = transactionCodeFormatted;
+      return newValues;
+    });
 
-    console.log("Número de servicio formateado:", serviceNumberFormatted);
+    console.log("Transaction code match:", transactionCodeFormatted);
     return;
   }
-  // Si no se encontró ninguna fecha válida, establecemos "Pendiente"
-  setTextInputValues((prevValues) => [
-    "Pendiente", // Modificar el primer valor con fechaFormateada
-    ...prevValues.slice(1), // Mantener los valores restantes sin cambios
-  ]);
-  console.log("La paja no coincide con el patrón especificado.");
+
+  // If no valid transaction code is found, set "Pending"
+  setTextInputValues((prevValues) => {
+    const newValues = [...prevValues];
+    newValues[4] = "Pendiente";
+    return newValues;
+  });
+  console.log(`Transaction code match: ${matchedTransactionCode}`);
 };
 
 /**
@@ -411,7 +385,7 @@ export const setServiceNumber = (
  */
 export const updateTextInputs = (
   extractedText: string,
-  setTextInputValues: (value: React.SetStateAction<string[]>) => void
+  setTextInputValues: (inputValue: React.SetStateAction<string[]>) => void
 ) => {
   if (extractedText) {
     const lowerCaseText = extractedText.toLowerCase();
@@ -419,6 +393,6 @@ export const updateTextInputs = (
     setDate(lowerCaseText, setTextInputValues);
     setAmount(lowerCaseText, setTextInputValues);
     setBank(lowerCaseText, setTextInputValues);
-    //setTransactionCode(lowerCaseText, setTextInputValues);
+    setTransactionCode(lowerCaseText, setTextInputValues);
   }
 };
