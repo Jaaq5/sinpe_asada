@@ -104,7 +104,6 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
 
   useEffect(() => {
     if (extractedText) {
-      console.log("Entra al useEffect 1");
       updateTextInputs(extractedText, setTextInputValues);
       setLoadingPreviews(false);
       setShowInputNotification(true);
@@ -116,7 +115,6 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
   useEffect(() => {
     const showNotificationBasedOnInputs = () => {
       const values = textInputValues;
-      console.log("textInputValues: ", textInputValues);
       const hasPending = values.includes("Pendiente");
       //const hasPending = true;
 
@@ -127,7 +125,6 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
       }
     };
     if (showInputNotification === true) {
-      console.log("Entra al useEffect de notificacion");
       showNotificationBasedOnInputs();
       setShowInputNotification(false);
     }
