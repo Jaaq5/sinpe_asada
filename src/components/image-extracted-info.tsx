@@ -57,8 +57,10 @@ const LabeledTextInputs: React.FC<LabeledTextInputsProps> = ({
   };
 
   const handleUpdateExcel = () => {
-    console.log("Valores actuales de los TextInput:", values);
-    // Aquí podrías implementar la lógica para actualizar el excel
+    window.open(
+      "https://acueductoscr.com/Recibos?provincia=2&idacueducto=3",
+      "_blank"
+    );
   };
 
   return (
@@ -102,7 +104,7 @@ const LabeledTextInputs: React.FC<LabeledTextInputsProps> = ({
         rightSection={<IconRefresh size={14} />}
         onClick={handleUpdateExcel}
       >
-        Actualizar excel
+        Consultar recibo
       </Button>
     </Group>
   );

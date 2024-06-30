@@ -65,7 +65,7 @@ export function HeaderTabs() {
 
   return (
     <div className={classes.header}>
-      <Container size="md" className=" flex place-items-baseline">
+      <Container fluid size="md" className=" flex place-items-baseline">
         <div className={classes.logoContainer}>
           {/* Crear un contenedor para el logo */}
           <Image
@@ -87,7 +87,9 @@ export function HeaderTabs() {
           }}
           //onChange={handleTabChange}
         >
-          <Tabs.List>{items}</Tabs.List>
+          <Tabs.List grow justify="center">
+            {items}
+          </Tabs.List>
         </Tabs>
         {/* User menu */}
         <Container className={classes.mainSection} size="md">
