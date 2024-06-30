@@ -12,8 +12,14 @@ export const setServiceNumber = (
     motivo: {
       regex: /\bmotivo\s+(.+?)\b(\d{3,4})\b/,
     },
+    motivo2: {
+      regex: /\bmotivo\s\b(\d{3,4})\b/,
+    },
     paja: {
       regex: /\bpaja\s+(\d+)\b/,
+    },
+    paja2: {
+      regex: /\bpaja(\d+)\b/,
     },
   };
 
@@ -26,10 +32,11 @@ export const setServiceNumber = (
     const match = text.match(regex);
     if (match) {
       matchedPattern = patternKey;
-      console.log("Match 0:", match[0]);
-      console.log("Match 1:", match[1]);
-      console.log("Match 2:", match[2]);
-      if (matchedPattern === "paja") {
+      if (
+        matchedPattern === "paja" ||
+        matchedPattern === "paja2" ||
+        matchedPattern === "motivo2"
+      ) {
         matchedServiceNumber = match[1];
         return true;
       } else {
@@ -51,7 +58,7 @@ export const setServiceNumber = (
       ...prevValues.slice(1), // Mantener los valores restantes sin cambios
     ]);
 
-    console.log("Número de servicio formateado:", serviceNumberFormatted);
+    console.log("Service number match:", serviceNumberFormatted);
     return;
   }
   // Si no se encontró ninguna fecha válida, establecemos "Pendiente"
@@ -59,7 +66,7 @@ export const setServiceNumber = (
     "Pendiente", // Modificar el primer valor con fechaFormateada
     ...prevValues.slice(1), // Mantener los valores restantes sin cambios
   ]);
-  console.log("La paja no coincide con el patrón especificado.");
+  console.log("Service number match:", matchedServiceNumber);
 };
 
 export const setDate = (
@@ -145,7 +152,7 @@ export const setDate = (
         fechaFormateada,
         ...prevValues.slice(2),
       ]);
-      console.log("Fecha formateada:", fechaFormateada);
+      console.log("Date match:", fechaFormateada);
       return;
     }
 
@@ -164,7 +171,7 @@ export const setDate = (
           fechaFormateada,
           ...prevValues.slice(2),
         ]);
-        console.log("Fecha formateada:", fechaFormateada);
+        console.log("Date match:", fechaFormateada);
         return;
       }
     }
@@ -176,67 +183,81 @@ export const setDate = (
     "Pendiente",
     ...prevValues.slice(2),
   ]);
-  console.log("La fecha no coincide con el patrón especificado.");
+  console.log("Date match:", matchedDate);
 };
 
 export const setAmount = (
-  text: string,
+  extractedText: string,
   setTextInputValues: (value: React.SetStateAction<string[]>) => void
 ) => {
-  const lowerCaseText = text.toLowerCase();
+  const lowerCaseText = extractedText.toLowerCase();
 
-  // Expresiones regulares para buscar un número después de "transferido" o "debitado"
-  const regexAmountTransferido = /\btransferido\s+(.*?)\s+motivo/;
-  const regexAmountDebitado = /\bdebitado\s+(.*?)\s+comisión/;
+  const amountPatterns: {
+    [key: string]: { regex: RegExp };
+  } = {
+    BCR1: {
+      regex: /\bdebitado\s+(.*?)\s+comisión/,
+    },
+    BCR2: {
+      regex: /\btransferido\s+(.*?)\s+motivo/,
+    },
+    BCR3: {
+      regex: /\b\d{1,3}(?:\.\d{3})+(?:,\d{2})+\b/,
+    },
+    BNCR1: {
+      regex: /\d{1,3}(?:.\d{3})*(?:\,\d{1,2})?\s*colones/,
+    },
+    Generic2: {
+      regex: /\b\d{1,3}(?:\,\d{3})+(?:.\d{2})+\b/,
+    },
+  };
 
-  let match: RegExpMatchArray | null;
-  let amountText: string | undefined;
+  let matchedPattern: string | undefined;
+  let matchedAmount: string | undefined;
 
-  // Buscar coincidencia con "transferido"
-  match = lowerCaseText.match(regexAmountDebitado);
-  if (match) {
-    amountText = match[1]; // Captura el texto que coincide con la expresión regular
-  }
-
-  // Si no se encuentra con "transferido", buscar con "debitado"
-  if (!amountText) {
-    match = lowerCaseText.match(regexAmountTransferido);
+  Object.keys(amountPatterns).some((patternKey: string) => {
+    const { regex } = amountPatterns[patternKey];
+    const match = extractedText.match(regex);
     if (match) {
-      amountText = match[1]; // Captura el texto que coincide con la expresión regular
+      matchedPattern = patternKey;
+      if (matchedPattern === "BCR1" || matchedPattern === "BCR2") {
+        matchedAmount = match[1];
+        return true;
+      } else {
+        matchedAmount = match[0];
+        return true;
+      }
     }
+    return false;
+  });
+
+  if (matchedPattern && matchedAmount) {
+    // Delete first number
+    if (matchedPattern === "BCR1" || matchedPattern === "BCR2") {
+      matchedAmount = matchedAmount.substring(1);
+    } else if (matchedPattern === "BNCR1") {
+      let index = matchedAmount.lastIndexOf(" colones");
+      matchedAmount = matchedAmount.substring(0, index);
+    }
+
+    const amountFormatted = matchedAmount;
+
+    setTextInputValues((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[2] = amountFormatted;
+      return newValues;
+    });
+
+    console.log("Amount match:", amountFormatted);
+    return;
   }
 
-  console.log("Amount match:", match);
-
-  if (amountText) {
-    // Quitamos el primer dígito
-    if (amountText.length > 1) {
-      amountText = amountText.substring(1); // Eliminamos el primer dígito
-    } else {
-      amountText = "0"; // Si solo hay un dígito, establecemos el monto como 0
-    }
-
-    // Actualizamos el estado con el valor del monto
-    const formattedAmount = amountText;
-    setTextInputValues((prevValues) => [
-      ...prevValues.slice(0, 2), // Mantener los dos primeros valores sin cambios
-      formattedAmount, // Modificar el tercer valor con "Pendiente"
-      ...prevValues.slice(3), // Mantener los valores restantes sin cambios
-    ]);
-
-    console.log("Monto encontrado:", amountText);
-  } else {
-    console.log(
-      "Texto después de 'transferido' o 'debitado' no es un número válido."
-    );
-
-    // Si no se encontró ningún monto válido, establecemos "Pendiente"
-    setTextInputValues((prevValues) => [
-      ...prevValues.slice(0, 2), // Mantener los dos primeros valores sin cambios
-      "Pendiente", // Modificar el tercer valor con "Pendiente"
-      ...prevValues.slice(3), // Mantener los valores restantes sin cambios
-    ]);
-  }
+  setTextInputValues((prevValues) => {
+    const newValues = [...prevValues];
+    newValues[2] = "Pendiente";
+    return newValues;
+  });
+  console.log(`Amount match: ${matchedAmount}`);
 };
 
 /**
