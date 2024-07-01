@@ -21,6 +21,12 @@ export const setServiceNumber = (
     paja2: {
       regex: /\bpaja(\d+)\b/,
     },
+    bncr: {
+      regex: /(\d{4})\s*.*?\s*concepto/,
+    },
+    bac: {
+      regex: /\bdetalle\s+(.+?)*\b(\d{3,5})\b/,
+    },
   };
 
   let matchedPattern: string | undefined;
@@ -31,31 +37,30 @@ export const setServiceNumber = (
     const { regex } = serviceNumberPatterns[patternKey];
     const match = text.match(regex);
     if (match) {
+      //console.log("match", match);
       matchedPattern = patternKey;
       if (
         matchedPattern === "paja" ||
         matchedPattern === "paja2" ||
-        matchedPattern === "motivo2"
+        matchedPattern === "motivo2" ||
+        matchedPattern === "bncr"
       ) {
         matchedServiceNumber = match[1];
         return true;
       } else {
-        matchedServiceNumber = match[2]; // El segundo grupo capturado por el regex
-        return true; // Salimos del bucle al encontrar la primera coincidencia
+        matchedServiceNumber = match[2];
+        return true;
       }
     }
     return false;
   });
 
-  // Si encontramos una coincidencia
   if (matchedPattern && matchedServiceNumber) {
-    // Aquí puedes realizar cualquier procesamiento adicional necesario
-    const serviceNumberFormatted = matchedServiceNumber;
+    const serviceNumberFormatted = matchedServiceNumber.slice(-4);
 
-    // Ejemplo de cómo podrías actualizar el estado de tus input values
     setTextInputValues((prevValues) => [
-      serviceNumberFormatted, // Modificar el primer valor con fechaFormateada
-      ...prevValues.slice(1), // Mantener los valores restantes sin cambios
+      serviceNumberFormatted,
+      ...prevValues.slice(1),
     ]);
 
     console.log("Service number match:", serviceNumberFormatted);
@@ -205,7 +210,10 @@ export const setAmount = (
       regex: /\b\d{1,3}(?:\.\d{3})+(?:,\d{2})+\b/,
     },
     BNCR1: {
-      regex: /\d{1,3}(?:.\d{3})*(?:\,\d{1,2})?\s*colones/,
+      regex: /\d{1,3}(?:,\d{1,3})+(?:\.\d{2})+\s*colones/,
+    },
+    BAC1: {
+      regex: /\bmonto\s+(.*?)\s+/,
     },
     Generic2: {
       regex: /\b\d{1,3}(?:\,\d{3})+(?:.\d{2})+\b/,
@@ -220,7 +228,14 @@ export const setAmount = (
     const match = extractedText.match(regex);
     if (match) {
       matchedPattern = patternKey;
-      if (matchedPattern === "BCR1" || matchedPattern === "BCR2") {
+      //console.log("Matched pattern:", matchedPattern);
+      //console.log("Match:", match);
+
+      if (
+        matchedPattern === "BCR1" ||
+        matchedPattern === "BCR2" ||
+        matchedPattern === "BAC1"
+      ) {
         matchedAmount = match[1];
         return true;
       } else {
@@ -233,7 +248,11 @@ export const setAmount = (
 
   if (matchedPattern && matchedAmount) {
     // Delete first number
-    if (matchedPattern === "BCR1" || matchedPattern === "BCR2") {
+    if (
+      matchedPattern === "BCR1" ||
+      matchedPattern === "BCR2" ||
+      matchedPattern === "BAC1"
+    ) {
       matchedAmount = matchedAmount.substring(1);
     } else if (matchedPattern === "BNCR1") {
       let index = matchedAmount.lastIndexOf(" colones");
@@ -353,6 +372,12 @@ export const setTransactionCode = (
     BCR: {
       regex: /\bdocumento\s+(\d{6,9})\b/,
     },
+    BNCR1: {
+      regex: /\b(\d{8})\s+(\s*comprobante)+\b/,
+    },
+    BNCR2: {
+      regex: /\b(9\d{7})\s*(\d{1,3})*\b/,
+    },
   };
 
   let matchedPattern: string | undefined;
@@ -364,8 +389,10 @@ export const setTransactionCode = (
     const match = extractedText.match(regex);
     if (match) {
       matchedPattern = patternKey;
-      matchedTransactionCode = match[1]; // Assuming the transaction code is captured in the first group
-      return true; // Exit the loop upon finding the first match
+      matchedTransactionCode = match[1];
+      //console.log("Match:", match);
+      console.log("Match pattern:", matchedPattern);
+      return true;
     }
     return false;
   });
