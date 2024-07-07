@@ -5,7 +5,7 @@ export const setServiceNumber = (
   setTextInputValues: (value: React.SetStateAction<string[]>) => void
 ) => {
   const lowerCaseText = text.toLowerCase();
-
+  console.log("Enters setServiceNumber");
   const serviceNumberPatterns: {
     [key: string]: { regex: RegExp };
   } = {
@@ -25,7 +25,7 @@ export const setServiceNumber = (
       regex: /(\d{4})\s*.*?\s*concepto/,
     },
     bac: {
-      regex: /\bdetalle\s+(.+?)*\b(\d{3,5})\b/,
+      regex: /\bdetalle\s+(.+?)\b(\d{3,5})\b/,
     },
   };
 
@@ -36,8 +36,9 @@ export const setServiceNumber = (
   Object.keys(serviceNumberPatterns).some((patternKey: string) => {
     const { regex } = serviceNumberPatterns[patternKey];
     const match = text.match(regex);
+    console.log("match", match);
     if (match) {
-      //console.log("match", match);
+      console.log("match", match);
       matchedPattern = patternKey;
       if (
         matchedPattern === "paja" ||
@@ -72,6 +73,7 @@ export const setServiceNumber = (
     ...prevValues.slice(1), // Mantener los valores restantes sin cambios
   ]);
   console.log("Service number match:", matchedServiceNumber);
+  return;
 };
 
 export const setDate = (
@@ -438,6 +440,7 @@ export const updateTextInputs = (
   if (extractedText) {
     const lowerCaseText = extractedText.toLowerCase();
     setServiceNumber(lowerCaseText, setTextInputValues);
+    console.log("Exists setServiceNumber");
     setDate(lowerCaseText, setTextInputValues);
     setAmount(lowerCaseText, setTextInputValues);
     setBank(lowerCaseText, setTextInputValues);

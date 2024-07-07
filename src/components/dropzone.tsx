@@ -79,6 +79,7 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
   };
 
   useEffect(() => {
+    console.log("Enters useEffect of file");
     if (files.length > 0) {
       const file = files[0];
       console.log("Archivo actual: ", file.name);
@@ -103,16 +104,19 @@ export function BaseDemo(props: ExtendedDropzoneProps) {
   }, [files]);
 
   useEffect(() => {
+    console.log("Enters useEffect of updateTextInputs");
     if (extractedText) {
       updateTextInputs(extractedText, setTextInputValues);
       setLoadingPreviews(false);
       setShowInputNotification(true);
       //showNotificationBasedOnInputs();
     }
+    console.log("Exists useEffect of updateTextInputs");
   }, [extractedText]);
 
   // TODO Works for now, consider using useRef instead
   useEffect(() => {
+    console.log("Enters useEffect of notification");
     const showNotificationBasedOnInputs = () => {
       const values = textInputValues;
       const hasPending = values.includes("Pendiente");
