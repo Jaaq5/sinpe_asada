@@ -1,8 +1,14 @@
-// app/components/loading.tsx
+// app/loading.tsx
 import React from "react";
+import styles from "../styles/Hourglass.module.css";
+import { Container } from "@mantine/core";
 
 const Loading: React.FC = () => {
-  return <div className="loading-spinner">Cargando...</div>;
+  return (
+    <Container className={styles.hourglassContainer}>
+      <div className={styles.hourglass}></div>
+    </Container>
+  );
 };
 
 export default Loading;

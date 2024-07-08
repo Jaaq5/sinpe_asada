@@ -5,7 +5,7 @@ import React, { Suspense } from "react";
 import TextExtractor from "../../components/text-extractor";
 import { BaseDemo } from "../../components/dropzone";
 import LabeledTextInputs from "../../components/image-extracted-info";
-import Loading from "../loading";
+//import Loading from "../loading";
 
 const Page: React.FC = () => {
   return (
