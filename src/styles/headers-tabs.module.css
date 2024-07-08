@@ -78,3 +78,25 @@
     border-bottom-color: transparent;
   }
 }
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: auto;
+  height: 100%;
+}
+
+.drawer {
+  display: block;
+}
+
+.burger {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+}

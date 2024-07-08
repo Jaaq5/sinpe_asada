@@ -13,6 +13,8 @@ import {
   Burger,
   rem,
   useMantineTheme,
+  ScrollArea,
+  Drawer,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -87,7 +89,7 @@ export function HeaderTabs() {
           }}
           //onChange={handleTabChange}
         >
-          <Tabs.List grow justify="center">
+          <Tabs.List grow className={classes.tabsList}>
             {items}
           </Tabs.List>
         </Tabs>
@@ -100,8 +102,7 @@ export function HeaderTabs() {
             <Burger
               opened={opened}
               onClick={toggle}
-              hiddenFrom="xs"
-              size="sm"
+              className={classes.burger}
             />
 
             <Menu
@@ -231,6 +232,31 @@ export function HeaderTabs() {
           </Group>
         </Container>
       </Container>
+      {/* Drawer for mobile menu */}
+      <Drawer
+        opened={opened}
+        onClose={toggle}
+        title="Navegación"
+        padding="md"
+        size="sm"
+        className={classes.drawer}
+      >
+        <ScrollArea>
+          <Tabs
+            defaultValue="Inicio"
+            variant="outline"
+            classNames={{
+              root: classes.tabs,
+              list: classes.tabsList,
+              tab: classes.tab,
+            }}
+            //onChange={handleTabChange}
+            orientation="vertical"
+          >
+            <Tabs.List>{items}</Tabs.List>
+          </Tabs>
+        </ScrollArea>
+      </Drawer>
     </div>
   );
 }
