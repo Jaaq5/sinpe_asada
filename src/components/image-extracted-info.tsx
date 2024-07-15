@@ -56,11 +56,18 @@ const LabeledTextInputs: React.FC<LabeledTextInputsProps> = ({
     }
   };
 
-  const handleUpdateExcel = () => {
-    window.open(
-      "https://acueductoscr.com/Recibos?provincia=2&idacueducto=3",
-      "_blank"
-    );
+  const handleCopyAll = () => {
+    const concatenatedText = values.join(" ");
+    navigator.clipboard
+      .writeText(concatenatedText)
+      .then(() => {
+        // Success message or feedback can be added here if needed
+        console.log("Copied to clipboard:", concatenatedText);
+      })
+      .catch((error) => {
+        console.error("Failed to copy:", error);
+        // Error message or feedback can be added here if needed
+      });
   };
 
   return (
@@ -102,9 +109,9 @@ const LabeledTextInputs: React.FC<LabeledTextInputsProps> = ({
       <Button
         color="green"
         rightSection={<IconRefresh size={14} />}
-        onClick={handleUpdateExcel}
+        onClick={handleCopyAll}
       >
-        Consultar recibo
+        Copiar todo
       </Button>
     </Group>
   );
