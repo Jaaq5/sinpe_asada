@@ -261,15 +261,25 @@ export const setAmount = (
       matchedAmount = matchedAmount.substring(0, index);
     }
 
-    const amountFormatted = matchedAmount;
+    // Eliminar punto de miles
+    let formattedAmount = matchedAmount.replace(/\./g, "");
+    // Eliminar coma
+    formattedAmount = formattedAmount.replace(/\,/g, "");
+
+    // Añadir la coma antes de los últimos dos dígitos
+    const decimalIndex = formattedAmount.length - 2;
+    formattedAmount =
+      formattedAmount.slice(0, decimalIndex) +
+      "," +
+      formattedAmount.slice(decimalIndex);
 
     setTextInputValues((prevValues) => {
       const newValues = [...prevValues];
-      newValues[2] = amountFormatted;
+      newValues[2] = formattedAmount;
       return newValues;
     });
 
-    console.log("Amount match:", amountFormatted);
+    console.log("Amount match:", formattedAmount);
     return;
   }
 
