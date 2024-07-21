@@ -21,7 +21,7 @@ export default function Home() {
         */}
       </div>
       <main className="relative z-10 mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 lg:mt-16 lg:px-8">
-        <div className="text-center text-white">
+        <div className="text-center">
           <h2 className="text-3xl tracking-tight font-extrabold sm:text-4xl">
             Bienvenidos a la ASADA de Dulce Nombre de Naranjo
           </h2>

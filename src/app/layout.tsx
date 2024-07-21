@@ -1,7 +1,7 @@
 // *IMPORTS ####################################################################
 import type { Metadata } from "next";
 
-import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { createTheme, ColorSchemeScript, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 
 import "@mantine/core/styles.css";
@@ -49,6 +49,74 @@ export const metadata: Metadata = {
 };
 //##############################################################################
 
+const customLightTheme = createTheme({
+  black: "#142850",
+  white: "#A0E9FF",
+  focusRing: "auto", // Specify the desired focus ring behavior
+  scale: 1, // Specify the scale if needed
+  fontSmoothing: true, // Specify font smoothing preference
+  colors: {}, // You can define additional colors if required
+  primaryShade: { light: 6, dark: 8 }, // Specify primary shade for light and dark themes
+  primaryColor: "blue", // Specify the primary color key
+  autoContrast: false, // Specify auto contrast preference
+  luminanceThreshold: 0.3, // Specify luminance threshold
+  fontFamily: "system-ui", // Specify the main font family
+  fontFamilyMonospace: "monospace", // Specify monospace font family
+  headings: {
+    fontFamily: "system-ui", // Specify font family for headings
+    fontWeight: "normal", // Specify font weight for headings
+    textWrap: "wrap", // Specify text wrap behavior for headings
+  },
+  radius: {}, // Define radius values if needed
+  defaultRadius: "sm", // Specify default radius
+  spacing: {}, // Define spacing values if needed
+  fontSizes: {}, // Define font sizes if needed
+  lineHeights: {}, // Define line heights if needed
+  breakpoints: {}, // Define breakpoints if needed
+  shadows: {}, // Define shadows if needed
+  respectReducedMotion: false, // Specify reduced motion preference
+  cursorType: "default", // Specify default cursor type
+  defaultGradient: { from: "#000", to: "#fff" }, // Specify default gradient
+  activeClassName: "active", // Specify active class name
+  focusClassName: "focus", // Specify focus class name
+  components: {}, // Define components customization if needed
+  other: {}, // Any other custom properties
+});
+
+const customDarkTheme = createTheme({
+  black: "#A0E9FF",
+  white: "#142850",
+  focusRing: "auto", // Specify the desired focus ring behavior
+  scale: 1, // Specify the scale if needed
+  fontSmoothing: true, // Specify font smoothing preference
+  colors: {}, // You can define additional colors if required
+  primaryShade: { light: 6, dark: 8 }, // Specify primary shade for light and dark themes
+  primaryColor: "blue", // Specify the primary color key
+  autoContrast: false, // Specify auto contrast preference
+  luminanceThreshold: 0.3, // Specify luminance threshold
+  fontFamily: "system-ui", // Specify the main font family
+  fontFamilyMonospace: "monospace", // Specify monospace font family
+  headings: {
+    fontFamily: "system-ui", // Specify font family for headings
+    fontWeight: "normal", // Specify font weight for headings
+    textWrap: "wrap", // Specify text wrap behavior for headings
+  },
+  radius: {}, // Define radius values if needed
+  defaultRadius: "sm", // Specify default radius
+  spacing: {}, // Define spacing values if needed
+  fontSizes: {}, // Define font sizes if needed
+  lineHeights: {}, // Define line heights if needed
+  breakpoints: {}, // Define breakpoints if needed
+  shadows: {}, // Define shadows if needed
+  respectReducedMotion: false, // Specify reduced motion preference
+  cursorType: "default", // Specify default cursor type
+  defaultGradient: { from: "#000", to: "#fff" }, // Specify default gradient
+  activeClassName: "active", // Specify active class name
+  focusClassName: "focus", // Specify focus class name
+  components: {}, // Define components customization if needed
+  other: {}, // Any other custom properties
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -57,10 +125,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <ColorSchemeScript />
+        <ColorSchemeScript defaultColorScheme="auto" />
       </head>
       <body className={monserrat.className}>
-        <MantineProvider defaultColorScheme="dark">
+        <MantineProvider defaultColorScheme="auto">
           <Notifications />
           <header>
             <Header />

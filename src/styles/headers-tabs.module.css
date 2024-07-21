@@ -1,9 +1,11 @@
 .header {
   padding-top: var(--mantine-spacing-sm);
+  /*
   background-color: light-dark(
     var(--mantine-color-gray-0),
     var(--mantine-color-dark-6)
   );
+  */
   border-bottom: rem(1px) solid
     light-dark(var(--mantine-color-gray-2), transparent);
   margin-bottom: rem(120px);
@@ -67,9 +69,10 @@
   }
 
   &[data-active] {
+    color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
     background-color: light-dark(
-      var(--mantine-color-white),
-      var(--mantine-color-dark-7)
+      var(--mantine-color-dark-7),
+      var(--mantine-color-white)
     );
     border-color: light-dark(
       var(--mantine-color-gray-2),
