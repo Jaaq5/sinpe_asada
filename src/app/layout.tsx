@@ -10,6 +10,7 @@ import "@mantine/notifications/styles.css";
 import "./globals.css";
 
 import Header from "../components/header";
+import TopNavMenu from "@/components/top-nav-menu";
 import { Footer } from "../components/mantine-footer";
 import { roboto, monserrat } from "../lib/fonts";
 
@@ -130,9 +131,9 @@ export default function RootLayout({
       <body className={monserrat.className}>
         <MantineProvider defaultColorScheme="auto">
           <Notifications />
-          <header>
-            <Header />
-          </header>
+          {/*<header>*/}
+          <TopNavMenu />
+          {/*</header>*/}
           {children}
           <footer>
             <Footer />
