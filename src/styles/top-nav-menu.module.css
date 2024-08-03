@@ -1,43 +1,60 @@
 /* top-nav-menu.module.css */
 
-.navBar {
-  background-color: var(--dark-color-1);
-  color: var(--light-color-3);
+.logoContainer {
   display: flex;
-  width: 100vw;
-  height: 60px;
+  justify-content: flex-start;
+  width: auto;
+  height: auto;
+}
+
+.navBar {
+  background-color: var(--dark-background-color);
+  color: var(--dark-font-color);
+  display: flex;
+  justify-content: space-between;
+  align-content: start;
+  width: auto;
+  height: auto;
   padding: 10px;
   position: sticky;
   top: 0;
   z-index: 100;
-  opacity: 0.9;
+  border-bottom: 2px solid var(--dark-font-color);
 }
 
 .logoText {
   display: flex;
   padding: 10px;
-  width: 25%;
+  width: auto;
   text-align: center;
   justify-content: center;
   align-items: center;
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: 700;
   text-decoration: none; /* Remove underline from links */
   flex-wrap: wrap;
 }
 
+.loginButton {
+  display: flex;
+  position: relative;
+  padding: 10px;
+  width: auto;
+  text-align: center;
+  justify-content: space-between;
+  align-items: end;
+  font-size: 2rem;
+  font-weight: 700;
+  text-decoration: none; /* Remove underline from links */
+}
+
 /* Base styles for the navigation menu */
 .nav {
-  --link-color: #a0e9ff;
-  --link-hover-color: #1eff00;
-  --link-font-weight: 700;
-  --link-font-size: 20px;
   margin: 0;
-  width: 100vw;
+  width: 300px;
   position: sticky;
   top: 0;
   z-index: 100; /* Asegura que el nav esté sobre otros elementos */
-  background-color: var(--dark-color-1);
   padding: 10px 0; /* Padding around the navigation */
   display: flex;
   justify-content: center; /* Center the navigation menu horizontally */
@@ -56,6 +73,8 @@
 }
 
 .link {
+  padding: 10px;
+  border-radius: 20px;
   font-size: var(--link-font-size);
   font-weight: var(--link-font-weight);
   text-decoration: none; /* Remove underline from links */
@@ -63,26 +82,119 @@
 }
 
 .link:hover {
-  color: var(--link-hover-color); /* Use variable for link hover color */
-  text-decoration: underline;
+  background-color: var(--dark-background-hover-color);
+  color: var(--dark-font-hover-color);
 }
 
-/* Responsive design */
-@media (max-width: 640px) {
+@media (max-width: 1920px) {
   .menu {
-    flex-direction: column; /* Stack menu items vertically on smaller screens */
-    align-items: center;
-    gap: 10px; /* Reduce space between menu items */
-    font-size: smaller;
+    flex-direction: row;
+    gap: 10px;
+    font-size: 20px;
     width: 100%;
   }
 
   .link {
-    font-size: smaller;
+    font-size: 20px;
   }
 
   .logoText {
     flex-direction: column;
-    font-size: smaller;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .menu {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    width: 100%;
+  }
+
+  .link {
+    font-size: 18px;
+  }
+
+  .logoText {
+    flex-direction: column;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 820px) {
+  .menu {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    width: 100%;
+  }
+
+  .link {
+    font-size: 16px;
+  }
+
+  .logoText {
+    flex-direction: column;
+    font-size: 1.5;
+  }
+}
+
+@media (max-width: 601px) {
+  .menu {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .link {
+    font-size: 14px;
+  }
+
+  .logoText {
+    flex-direction: column;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 414px) {
+  .menu {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    width: 100%;
+  }
+
+  .link {
+    font-size: 12px;
+  }
+
+  .logoText {
+    flex-direction: column;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .menu {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    width: 100%;
+  }
+
+  .link {
+    font-size: 10px;
+  }
+
+  .logoText {
+    flex-direction: column;
+    font-size: 10px;
   }
 }

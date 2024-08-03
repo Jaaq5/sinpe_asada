@@ -2,6 +2,19 @@
 import React from "react";
 import styles from "@/styles/top-nav-menu.module.css";
 
+// Componente Logo
+const Logo: React.FC = () => {
+  return (
+    <div>
+      <img
+        src="/top-nav-bar-logo.png"
+        alt="Logo"
+        className={styles.logoImage}
+      />
+    </div>
+  );
+};
+
 export interface TopNavMenuProps {
   logoText?: string;
   invoiceLinkText?: string;
@@ -17,7 +30,7 @@ export interface TopNavMenuProps {
 }
 
 const TopNavMenu: React.FC<TopNavMenuProps> = ({
-  logoText = "ASADA Dulce Nombre de Naranjo",
+  logoText = "ASADA Dulce Nombre Naranjo",
   invoiceLinkText = "Consultar recibo",
   servicesLinkText = "Tramites",
   sinpeLinkText = "Sinpe",
@@ -31,6 +44,9 @@ const TopNavMenu: React.FC<TopNavMenuProps> = ({
 }) => {
   return (
     <div className={styles.navBar}>
+      {/* Logo image */}
+      <Logo />
+      {/* */}
       <a className={styles.logoText} href="/">
         {logoText}
       </a>
@@ -86,7 +102,8 @@ const TopNavMenu: React.FC<TopNavMenuProps> = ({
           </li>
         </ul>
       </nav>
-      <a className={styles.logoText} href="/">
+      {/* Login link */}
+      <a className={styles.loginButton} href="/">
         {loginLinkText}
       </a>
     </div>

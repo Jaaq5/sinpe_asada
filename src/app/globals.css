@@ -2,28 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global variables */
 :root {
+  /* Dark theme colors */
   --dark-color-1: #142850;
   --dark-color-2: #27496d;
   --dark-color-3: #0c7b93;
   --dark-color-4: #00a8cc;
+
+  --dark-background-color: #142850;
+  --dark-font-color: #a0e9ff;
+  --dark-background-hover-color: #a0e9ff;
+  --dark-font-hover-color: #142850;
+
+  /* Light theme colors */
   --light-color-1: #00a9ff;
   --light-color-2: #89cff3;
   --light-color-3: #a0e9ff;
   --light-color-4: #cdf5fd;
+
+  /* Font */
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+
+  --small-font-size: 12px;
+  --medium-font-size: 16px;
+  --large-font-size: 20px;
+
+  --small-weight-size: 200;
+  --medium-weight-size: 400;
+  --large-weight-size: 700;
 }
 
 body {
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    "Open Sans",
-    "Helvetica Neue",
-    sans-serif;
+  font-family: var(--font-family);
 }

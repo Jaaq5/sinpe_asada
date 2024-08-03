@@ -1,5 +1,8 @@
 import type { Preview } from "@storybook/react";
 
+// Nextjs globlal css
+import "../src/app/globals.css";
+
 const preview: Preview = {
   parameters: {
     controls: {
