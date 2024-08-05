@@ -3,18 +3,21 @@
 .logoContainer {
   display: flex;
   justify-content: flex-start;
-  width: auto;
-  height: auto;
+  width: fixed;
+  height: fixed;
+  padding: 5px;
+  border-radius: 25px;
 }
 
 .navBar {
   background-color: var(--dark-background-color);
   color: var(--dark-font-color);
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
+  align-items: center;
   align-content: start;
   width: auto;
-  height: auto;
+  height: fit-content;
   padding: 10px;
   position: sticky;
   top: 0;
@@ -38,10 +41,10 @@
 .loginButton {
   display: flex;
   position: relative;
+  width: 33%;
   padding: 10px;
-  width: auto;
   text-align: center;
-  justify-content: space-between;
+  justify-content: end;
   align-items: end;
   font-size: 2rem;
   font-weight: 700;
@@ -51,7 +54,7 @@
 /* Base styles for the navigation menu */
 .nav {
   margin: 0;
-  width: 300px;
+  width: 33%;
   position: sticky;
   top: 0;
   z-index: 100; /* Asegura que el nav esté sobre otros elementos */
@@ -64,8 +67,7 @@
 .menu {
   list-style: none; /* Remove bullet points from the list */
   display: flex; /* Display menu items in a row */
-  gap: 20px; /* Space between menu items */
-  padding: 0;
+  padding: 10px;
   height: 50px;
   margin: 0;
   justify-content: center;
@@ -78,7 +80,6 @@
   font-size: var(--link-font-size);
   font-weight: var(--link-font-weight);
   text-decoration: none; /* Remove underline from links */
-  transition: color 0.3s; /* Smooth color transition on hover */
 }
 
 .link:hover {
@@ -102,6 +103,10 @@
     flex-direction: column;
     font-size: 20px;
   }
+
+  .loginButton {
+    font-size: 20px;
+  }
 }
 
 @media (max-width: 1280px) {
@@ -119,6 +124,9 @@
 
   .logoText {
     flex-direction: column;
+    font-size: 18px;
+  }
+  .loginButton {
     font-size: 18px;
   }
 }
@@ -141,6 +149,10 @@
     flex-direction: column;
     font-size: 1.5;
   }
+
+  .loginButton {
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 601px) {
@@ -157,6 +169,9 @@
 
   .logoText {
     flex-direction: column;
+    font-size: 14px;
+  }
+  .loginButton {
     font-size: 14px;
   }
 }
@@ -178,6 +193,10 @@
     flex-direction: column;
     font-size: 12px;
   }
+
+  .loginButton {
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 360px) {
@@ -195,6 +214,9 @@
 
   .logoText {
     flex-direction: column;
+    font-size: 10px;
+  }
+  .loginButton {
     font-size: 10px;
   }
 }

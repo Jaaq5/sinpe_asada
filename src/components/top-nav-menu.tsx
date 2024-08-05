@@ -9,7 +9,7 @@ const Logo: React.FC = () => {
       <img
         src="/top-nav-bar-logo.png"
         alt="Logo"
-        className={styles.logoImage}
+        className={styles.logoContainer}
       />
     </div>
   );
@@ -44,12 +44,14 @@ const TopNavMenu: React.FC<TopNavMenuProps> = ({
 }) => {
   return (
     <div className={styles.navBar}>
-      {/* Logo image */}
-      <Logo />
-      {/* */}
-      <a className={styles.logoText} href="/">
-        {logoText}
-      </a>
+      <div className="flex p-1 w-2/6">
+        {/* Logo image */}
+        <Logo />
+        {/* */}
+        <a className={styles.logoText} href="/">
+          {logoText}
+        </a>
+      </div>
       <nav
         className={styles.nav}
         style={{ backgroundColor: navBackgroundColor }}
